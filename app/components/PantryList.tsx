@@ -1,11 +1,9 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState } from "react";
 import PantryForm from "./PantryForm";
 import EditPantry from "./EditPantry";
 import Pantry from "./Pantry";
-import SearchBtn from "./SearchBtn";
-
 import {
   collection,
   addDoc,
@@ -13,54 +11,41 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
-  updateDoc, // Import updateDoc to handle updates
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
+import { TextField, InputAdornment, Container, Paper } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function PantryList() {
   const [pantries, setPantries] = useState([]);
   const [searchItem, setSearchItem] = useState("");
 
-  // Add data to the db
   const addPantry = async (e, value) => {
     e.preventDefault();
-
     try {
-      const docRef = await addDoc(collection(db, "pantry"), {
-        value: value,
-      });
+      const docRef = await addDoc(collection(db, "pantry"), { value: value });
       console.log("Document written with ID: ", docRef.id);
-
-      setPantries([
-        ...pantries,
-        { id: docRef.id, value: value, isEditing: false },
-      ]);
+      setPantries([...pantries, { id: docRef.id, value: value, isEditing: false }]);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
   };
 
-  // Read data from the db
   useEffect(() => {
     const q = query(collection(db, "pantry"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let pantryArr = [];
-
       querySnapshot.forEach((doc) => {
         pantryArr.push({ ...doc.data(), id: doc.id });
       });
-
       setPantries(pantryArr);
     });
-
-    // Clean up the subscription when the component unmounts
     return () => unsubscribe();
   }, []);
 
-  // Delete from the db
   const deletePantry = async (id) => {
     await deleteDoc(doc(db, "pantry", id));
-
     setPantries(pantries.filter((pantry) => pantry.id !== id));
   };
 
@@ -74,11 +59,8 @@ export default function PantryList() {
 
   const editTask = async (task, id) => {
     try {
-      // Update the document in Firestore
       const pantryRef = doc(db, "pantry", id);
       await updateDoc(pantryRef, { value: task });
-
-      // Update the local state
       setPantries(
         pantries.map((pantry) =>
           pantry.id === id ? { ...pantry, value: task, isEditing: false } : pantry
@@ -89,27 +71,42 @@ export default function PantryList() {
     }
   };
 
-  // Corrected filtering logic
   const filteredPantries = pantries.filter((pantry) =>
     pantry.value.toLowerCase().includes(searchItem.toLowerCase())
   );
 
   return (
-    <div className="p-4">
-      <SearchBtn searchItem={searchItem} setSearchItem={setSearchItem} />
-      <PantryForm addPantry={addPantry} />
-      {filteredPantries.map((pantry) =>
-        pantry.isEditing ? (
-          <EditPantry key={pantry.id} task={pantry} updatePantry={editTask} />
-        ) : (
-          <Pantry
-            key={pantry.id}
-            task={pantry}
-            deletePantry={deletePantry}
-            updatePantry={updatePantry}
-          />
-        )
-      )}
-    </div>
+    <Container maxWidth="sm" className="px-4 sm:px-6 md:px-8 my-8">
+      <Paper elevation={3} className="p-6 bg-transparent mx-auto hover:cursor-pointer shadow-lg">
+        <TextField
+          fullWidth
+          placeholder="Search Pantry"
+          variant="outlined"
+          value={searchItem}
+          onChange={(e) => setSearchItem(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          className="mb-6"
+        />
+        <PantryForm addPantry={addPantry} />
+        {filteredPantries.map((pantry) =>
+          pantry.isEditing ? (
+            <EditPantry key={pantry.id} task={pantry} updatePantry={editTask} />
+          ) : (
+            <Pantry
+              key={pantry.id}
+              task={pantry}
+              deletePantry={deletePantry}
+              updatePantry={updatePantry}
+            />
+          )
+        )}
+      </Paper>
+    </Container>
   );
 }

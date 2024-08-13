@@ -37,8 +37,13 @@ export default function Pantry({ task, deletePantry, updatePantry }) {
   };
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg mb-4 flex  text-center justify-between items-center">
-      <Typography variant="h5" className="text-gray-800">
+    <div
+      className="p-4 bg-white shadow-lg rounded-lg mb-4 flex justify-between items-center transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:bg-gray-100"
+    >
+      <Typography
+        variant="h5"
+        className="text-gray-800 hover:text-violet-500"
+      >
         {task.value}
       </Typography>
       <div className="flex space-x-4">
@@ -57,17 +62,18 @@ export default function Pantry({ task, deletePantry, updatePantry }) {
       </div>
 
       {/* Edit Modal */}
-      {/* text-gray-200 */}
-      
       <Dialog open={openEdit} onClose={handleEditClose} className="text-center">
         <DialogTitle className="text-center mx-auto w-96">
-          <Image src={EditTodo} alt="edit svg" width={200} height={200} className="py-4 mx-auto text-center" />
-          {/* Edit Pantry Item */}
+          <Image
+            src={EditTodo}
+            alt="edit svg"
+            width={200}
+            height={200}
+            className="py-4 mx-auto text-center"
+          />
         </DialogTitle>
         <DialogContent>
-        <DialogContentText>
-           Edit Pantry Item
-          </DialogContentText>
+          <DialogContentText>Edit Pantry Item</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -98,10 +104,19 @@ export default function Pantry({ task, deletePantry, updatePantry }) {
       </Dialog>
 
       {/* Delete Confirmation Modal */}
-      <Dialog open={openDelete} onClose={handleDeleteClose} className="text-center">
+      <Dialog
+        open={openDelete}
+        onClose={handleDeleteClose}
+        className="text-center"
+      >
         <DialogTitle className="text-center mx-auto">
-          <Image src={DeleteTodo} alt="edit svg" width={200} height={200} className="py-4 mx-auto text-center" />
-          {/* Delete Pantry Item */}
+          <Image
+            src={DeleteTodo}
+            alt="edit svg"
+            width={200}
+            height={200}
+            className="py-4 mx-auto text-center"
+          />
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -109,10 +124,17 @@ export default function Pantry({ task, deletePantry, updatePantry }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="flex justify-between text-center items-center">
-          <Button onClick={handleDeleteClose} className="hover:text-blue-600 hover:font-bold">
+          <Button
+            onClick={handleDeleteClose}
+            className="hover:text-blue-600 hover:font-bold"
+          >
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="secondary" className="hover:text-red-600 hover:font-bold">
+          <Button
+            onClick={handleDeleteConfirm}
+            color="secondary"
+            className="hover:text-red-600 hover:font-bold"
+          >
             Delete
           </Button>
         </DialogActions>

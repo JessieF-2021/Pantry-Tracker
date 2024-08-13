@@ -6,7 +6,7 @@ export default function Title() {
   return (
     <div className="text-center">
         <Typography variant="h4" className="mt-40 text-6xl text-white">
-          Pantry Tracker
+          Pebbles
         </Typography>
       </div>
   )
